@@ -124,4 +124,79 @@ public class NaturalSortKeyTests extends AbstractNodesTests {
         }
     }
 
+    @Test
+    public void testComplex() throws Exception {
+        try {
+            client.admin().indices().prepareDelete("test").execute().actionGet();
+        } catch (Exception e) {
+            // ignore
+        }
+        Settings settings = settingsBuilder()
+                .put("index.analysis.analyzer.naturalsort.tokenizer", "keyword")
+                .put("index.analysis.analyzer.naturalsort.filter", "naturalsort")
+                .build();
+
+        client.admin().indices().prepareCreate("test")
+                .setSettings(settings)
+                .addMapping("type1",
+                        "{ type1 : { properties : { points : { type : \"multi_field\", fields : { points : { type : \"string\" }, sort : { type : \"string\", analyzer : \"naturalsort\" } } } } } }")
+                .execute().actionGet();
+
+        client.admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
+
+        String [] words = new String[] {
+                "7 201 2 1","7 25 2 1", "7 1 1 1", "7 10 1 1", "7 2 1 2", "7 20 2 1"
+        };
+
+        for (String word : words) {
+            client.prepareIndex("test", "type1")
+                    .setSource(jsonBuilder().startObject()
+                            .field("points", word)
+                            .endObject()).execute().actionGet();
+        }
+
+        client.admin().indices().prepareFlush().setRefresh(true).execute().actionGet();
+
+        for (int i = 0; i < numberOfRuns(); i++) {
+            SearchResponse searchResponse = client.prepareSearch()
+                    .addField("points")
+                    .addSort("points.sort", SortOrder.ASC)
+                    .execute().actionGet();
+
+            //logger.info(searchResponse.toString());
+
+            assertThat(searchResponse.hits().totalHits(), equalTo(6l));
+            assertThat(searchResponse.hits().getAt(0).field("points").getValue().toString(), equalTo("7 1 1 1"));
+            assertThat(searchResponse.hits().getAt(1).field("points").getValue().toString(), equalTo("7 2 1 2"));
+            assertThat(searchResponse.hits().getAt(2).field("points").getValue().toString(), equalTo("7 10 1 1"));
+            assertThat(searchResponse.hits().getAt(3).field("points").getValue().toString(), equalTo("7 20 2 1"));
+            assertThat(searchResponse.hits().getAt(4).field("points").getValue().toString(), equalTo("7 25 2 1"));
+            assertThat(searchResponse.hits().getAt(5).field("points").getValue().toString(), equalTo("7 201 2 1"));
+
+
+
+        }
+
+        for (int i = 0; i < numberOfRuns(); i++) {
+            SearchResponse searchResponse = client.prepareSearch()
+                    .addField("points")
+                    .addSort("points.sort", SortOrder.DESC)
+                    .execute().actionGet();
+
+            //logger.info(searchResponse.toString());
+
+            assertThat(searchResponse.hits().totalHits(), equalTo(6l));
+            assertThat(searchResponse.hits().getAt(0).field("points").getValue().toString(), equalTo("7 201 2 1"));
+            assertThat(searchResponse.hits().getAt(1).field("points").getValue().toString(), equalTo("7 25 2 1"));
+            assertThat(searchResponse.hits().getAt(2).field("points").getValue().toString(), equalTo("7 20 2 1"));
+            assertThat(searchResponse.hits().getAt(3).field("points").getValue().toString(), equalTo("7 10 1 1"));
+            assertThat(searchResponse.hits().getAt(4).field("points").getValue().toString(), equalTo("7 2 1 2"));
+            assertThat(searchResponse.hits().getAt(5).field("points").getValue().toString(), equalTo("7 1 1 1"));
+
+
+
+        }
+    }
+
+
 }
