@@ -67,12 +67,14 @@ public final class NaturalSortKeyFilter extends TokenFilter {
   private String natural(String s) {
       StringBuffer sb = new StringBuffer();
       Matcher m = numberPattern.matcher(s);
-      if (m.find()) {
-	  int len = m.group(2).length();
-	  String repl = String.format("%0"+digits+"d", len) + m.group();
-	  m.appendReplacement(sb, repl);
+
+      while (m.find()) {
+          int len = m.group(2).length();
+          String repl = String.format("%0"+digits+"d", len) + m.group();
+          m.appendReplacement(sb, repl);
       }
       m.appendTail(sb);
+
       return sb.toString();
   }
 }
