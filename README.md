@@ -1,3 +1,17 @@
+Installation
+
+- Download the source and unzip it if necessary
+- cd to the directory (i.e. elasticsearch-analysis-naturalsort-master/)
+- Package the plugin with Maven:
+    - Just run "mvn package"
+- Then install the plugin:
+    - /path/to/elasticsearch/bin/plugin -url file:./target/releases/elasticsearch-analysis-naturalsort-1.0.0.zip -install naturalsort
+- Restart elasticsearch:
+    - service elasticserach restart
+
+- You can make sure it's installed by doing:
+    - curl -XGET 'http://localhost:9200/_nodes/plugin?pretty=true'
+
 Settings
 
     index:
