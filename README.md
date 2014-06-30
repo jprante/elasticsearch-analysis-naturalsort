@@ -1,3 +1,39 @@
+
+# Elasticsearch analysis plugin for natural sort
+
+This plugin allows the use of sort keys for natural sort order.
+
+## Versions
+
+| Elasticsearch version    | Plugin      | Release date |
+| ------------------------ | ----------- | -------------|
+| 1.2.1                    | 1.2.1.0     | Jun 30, 2014 |
+
+## Installation
+
+```
+./bin/plugin -install analysis-naturalsort -url http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-naturalsort/1.2.1.0/elasticsearch-analysis-naturalsort-1.2.1.0.zip
+```
+
+Do not forget to restart the node after installing.
+
+## Checksum
+
+| File                                          | SHA1                                     |
+| --------------------------------------------- | -----------------------------------------|
+| elasticsearch-support-1.2.1.0.zip             | 0c410ef28dff38c4a79dab8706dde7a74b056d97 |
+
+
+## Project docs
+
+The Maven project site is available at `Github <http://jprante.github.io/elasticsearch-analysis-naturalsort>`_
+
+## Issues
+
+All feedback is welcome! If you find issues, please post them at `Github <https://github.com/jprante/elasticsearch-analysis-naturalsort/issues>`_
+
+# How to use
+
 Settings
 
     index:
@@ -13,9 +49,8 @@ Mappings
       "type1" : { 
         "properties" : { 
              "points" : { 
-                "type" : "multi_field", 
+                "type" : "string", 
                 "fields" : { 
-                    "points" : { "type" : "string" }, 
                     "sort" : { "type" : "string", "analyzer" : "naturalsort" } 
                 } 
              } 
@@ -82,3 +117,21 @@ Response
         } ]
       }
     }
+
+# License
+
+Elasticsearch Analysis Naturalsort Plugin
+
+Copyright (C) 2012 Jörg Prante
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+lim

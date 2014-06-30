@@ -9,17 +9,10 @@
         <dependencySet>
             <outputDirectory>/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
-            <excludes>
-                <exclude>org.elasticsearch:elasticsearch</exclude>
-            </excludes>
-        </dependencySet>
-        <dependencySet>
-            <outputDirectory>/</outputDirectory>
-            <useProjectArtifact>true</useProjectArtifact>
-            <useTransitiveFiltering>true</useTransitiveFiltering>
+            <unpack>false</unpack>
+            <scope>compile</scope>
             <includes>
-                <include>org.apache.lucene:lucene-icu</include>
+                <include>org.xbib.elasticsearch.plugin</include>
             </includes>
         </dependencySet>
     </dependencySets>
