@@ -21,7 +21,7 @@ Do not forget to restart the node after installing.
 
 | File                                          | SHA1                                     |
 | --------------------------------------------- | -----------------------------------------|
-| elasticsearch-support-1.2.1.0.zip             | cbc351951532c1e7280fbfff8ac6fcc75aecea38 |
+| elasticsearch-support-1.2.1.0.zip             | 6cadc34119f4394fb3b706d18a17aaff17c2bb5f |
 
 
 ## Project docs
