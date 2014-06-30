@@ -26,11 +26,11 @@ Do not forget to restart the node after installing.
 
 ## Project docs
 
-The Maven project site is available at `Github <http://jprante.github.io/elasticsearch-analysis-naturalsort>`_
+The Maven project site is available at [Github](http://jprante.github.io/elasticsearch-analysis-naturalsort)
 
 ## Issues
 
-All feedback is welcome! If you find issues, please post them at `Github <https://github.com/jprante/elasticsearch-analysis-naturalsort/issues>`_
+All feedback is welcome! If you find issues, please post them at [Github](https://github.com/jprante/elasticsearch-analysis-naturalsort/issues)
 
 # How to use
 
