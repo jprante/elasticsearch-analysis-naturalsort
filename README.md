@@ -20,11 +20,10 @@ Do not forget to restart the node after installing.
 
 ## Checksum
 
-| File                                          | SHA1                                     |
-| --------------------------------------------- | -----------------------------------------|
-| elasticsearch-support-1.4.0.0.zip             | e0eb8dcc26e6b6516e01277b1c76bfb1b624dfa0 |
-| elasticsearch-support-1.2.1.0.zip             | 6cadc34119f4394fb3b706d18a17aaff17c2bb5f |
-
+| File                                             | SHA1                                     |
+| ------------------------------------------------ | -----------------------------------------|
+| elasticsearch-analysis-naturalsort-1.4.0.0.zip   | e0eb8dcc26e6b6516e01277b1c76bfb1b624dfa0 |
+| elasticsearch-analysis-naturalsort-1.2.1.0.zip   | 6cadc34119f4394fb3b706d18a17aaff17c2bb5f |
 
 ## Project docs
 
