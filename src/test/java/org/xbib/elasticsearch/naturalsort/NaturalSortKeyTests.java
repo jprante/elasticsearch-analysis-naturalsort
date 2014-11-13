@@ -92,8 +92,6 @@ public class NaturalSortKeyTests extends AbstractNodesTests {
                     .addSort("points.sort", SortOrder.ASC)
                     .execute().actionGet();
 
-            logger.info(searchResponse.toString());
-
             assertThat(searchResponse.getHits().totalHits(), equalTo(3l));
             assertThat(searchResponse.getHits().getAt(0).field("points").getValue().toString(), equalTo("Bob: 2 points"));
             assertThat(searchResponse.getHits().getAt(1).field("points").getValue().toString(), equalTo("Bob: 3 points"));
@@ -101,6 +99,7 @@ public class NaturalSortKeyTests extends AbstractNodesTests {
 
         }
     }
+
 
     @Test
     public void testComplex() throws Exception {
@@ -159,6 +158,54 @@ public class NaturalSortKeyTests extends AbstractNodesTests {
             assertThat(searchResponse.getHits().getAt(4).field("points").getValue().toString(), equalTo("7 2 1 2"));
             assertThat(searchResponse.getHits().getAt(5).field("points").getValue().toString(), equalTo("7 1 1 1"));
         }
+    }
+
+    @Test
+    public void testDewey() throws Exception {
+        try {
+            client.admin().indices().prepareDelete("test").execute().actionGet();
+        } catch (Exception e) {
+            // ignore
+        }
+        Settings settings = settingsBuilder()
+                .put("index.analysis.analyzer.naturalsort.tokenizer", "keyword")
+                .put("index.analysis.analyzer.naturalsort.filter", "naturalsort")
+                .build();
+
+        client.admin().indices().prepareCreate("test")
+                .setSettings(settings)
+                .addMapping("type1", "{ type1 : { properties : { notation : { type : \"string\", fields : { sort : { type : \"string\", analyzer : \"naturalsort\" } } } } } }")
+                .execute().actionGet();
+
+        client.admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
+
+        String[] notations = new String[] {
+                "10.10.1", "10.1.1", "2.11.0", "2.10.1", "2.1.1", "1.10.0", "1.0.0"
+        };
+
+        for (String notation : notations) {
+            client.prepareIndex("test", "type1")
+                    .setSource(jsonBuilder().startObject().field("notation", notation).endObject()).execute().actionGet();
+        }
+
+        client.admin().indices().prepareRefresh().execute().actionGet();
+
+        for (int i = 0; i < numberOfRuns(); i++) {
+            SearchResponse searchResponse = client.prepareSearch()
+                    .addField("notation")
+                    .addSort("notation.sort", SortOrder.ASC)
+                    .execute().actionGet();
+            assertThat(searchResponse.getHits().totalHits(), equalTo(7l));
+
+            assertThat(searchResponse.getHits().getAt(0).field("notation").getValue().toString(), equalTo("1.0.0"));
+            assertThat(searchResponse.getHits().getAt(1).field("notation").getValue().toString(), equalTo("1.10.0"));
+            assertThat(searchResponse.getHits().getAt(2).field("notation").getValue().toString(), equalTo("2.1.1"));
+            assertThat(searchResponse.getHits().getAt(3).field("notation").getValue().toString(), equalTo("2.10.1"));
+            assertThat(searchResponse.getHits().getAt(4).field("notation").getValue().toString(), equalTo("2.11.0"));
+            assertThat(searchResponse.getHits().getAt(5).field("notation").getValue().toString(), equalTo("10.1.1"));
+            assertThat(searchResponse.getHits().getAt(6).field("notation").getValue().toString(), equalTo("10.10.1"));
+        }
+
     }
 
 }

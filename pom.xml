@@ -7,7 +7,7 @@
 
     <groupId>org.xbib.elasticsearch.plugin</groupId>
     <artifactId>elasticsearch-analysis-naturalsort</artifactId>
-    <version>1.2.1.0</version>
+    <version>1.4.0.0</version>
     <packaging>jar</packaging>
 
     <name>elasticsearch-analysis-naturalsort</name>
@@ -56,11 +56,10 @@
     </repositories>
 
     <properties>
-        <compiler.source.version>1.7</compiler.source.version>
-        <compiler.target.version>1.7</compiler.target.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <github.global.server>github</github.global.server>
-        <elasticsearch.version>1.2.1</elasticsearch.version>
+        <java.compiler.version>1.7</java.compiler.version>
+        <elasticsearch.version>1.4.0</elasticsearch.version>
     </properties>
 
     <dependencies>
@@ -71,13 +70,6 @@
             <version>${elasticsearch.version}</version>
             <type>jar</type>
             <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -93,7 +85,21 @@
             <version>1.1</version>
             <scope>test</scope>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -125,8 +131,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.1</version>
                 <configuration>
-                    <source>${compiler.source.version}</source>
-                    <target>${compiler.target.version}</target>
+                    <source>${java.compiler.version}</source>
+                    <target>${java.compiler.version}</target>
                 </configuration>
             </plugin>
             <plugin>
