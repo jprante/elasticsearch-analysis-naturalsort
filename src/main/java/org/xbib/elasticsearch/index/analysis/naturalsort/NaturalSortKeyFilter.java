@@ -14,17 +14,20 @@ import java.util.regex.Pattern;
 public final class NaturalSortKeyFilter extends TokenFilter {
     private final Collator collator;
     private final int digits;
+    private final int maxTokens;
     private final CharTermAttribute termAtt = addAttribute(CharTermAttribute.class);
 
     /**
      * @param input    Source token stream
      * @param collator CollationKey generator
      * @param digits   the maximum number of digits for natural sort length, default is 1 (i.e. up to number lengths of 9 can be sorted)
+     * @param maxTokens   the maximum number of numbers to be prepended, the default is 2)
      */
-    public NaturalSortKeyFilter(TokenStream input, Collator collator, int digits) {
+    public NaturalSortKeyFilter(TokenStream input, Collator collator, int digits, int maxTokens) {
         super(input);
         this.collator = (Collator) collator.clone();
         this.digits = digits;
+        this.maxTokens = maxTokens;
     }
 
     @Override
@@ -46,10 +49,16 @@ public final class NaturalSortKeyFilter extends TokenFilter {
     private String natural(String s) {
         StringBuffer sb = new StringBuffer();
         Matcher m = numberPattern.matcher(s);
+        int foundTokens = 0;
         while (m.find()) {
             int len = m.group(2).length();
             String repl = String.format("%0" + digits + "d", len) + m.group();
             m.appendReplacement(sb, repl);
+
+            foundTokens++;
+            if (foundTokens >= maxTokens){
+                break;
+            }
         }
         m.appendTail(sb);
         return sb.toString();
