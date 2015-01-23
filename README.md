@@ -8,6 +8,7 @@ This plugin allows the use of sort keys for natural sort order.
 | Elasticsearch version    | Plugin      | Release date |
 | ------------------------ | ----------- | -------------|
 | 1.4.0                    | 1.4.0.0     | Nov 13, 2014 |
+| 1.3.4                    | 1.3.4.0     | Jan 23, 2014 |
 | 1.2.1                    | 1.2.1.0     | Jun 30, 2014 |
 
 ## Installation
@@ -23,6 +24,7 @@ Do not forget to restart the node after installing.
 | File                                                    | SHA1                                     |
 | ------------------------------------------------------- | -----------------------------------------|
 | elasticsearch-analysis-naturalsort-1.4.0.0-plugin.zip   | e0eb8dcc26e6b6516e01277b1c76bfb1b624dfa0 |
+| elasticsearch-analysis-naturalsort-1.3.4.0-plugin.zip   | 0dec15d237a0a794968db41f9e6405f200293bd7 |
 | elasticsearch-analysis-naturalsort-1.2.1.0-plugin.zip   | 6cadc34119f4394fb3b706d18a17aaff17c2bb5f |
 
 ## Project docs
