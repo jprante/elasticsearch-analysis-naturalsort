@@ -24,7 +24,7 @@ Do not forget to restart the node after installing.
 | File                                                    | SHA1                                     |
 | ------------------------------------------------------- | -----------------------------------------|
 | elasticsearch-analysis-naturalsort-1.4.0.0-plugin.zip   | e0eb8dcc26e6b6516e01277b1c76bfb1b624dfa0 |
-| elasticsearch-analysis-naturalsort-1.3.4.0-plugin.zip   | 0dec15d237a0a794968db41f9e6405f200293bd7 |
+| elasticsearch-analysis-naturalsort-1.3.4.0-plugin.zip   | 06a210086a534d43ec3268c8453d293c5526462f |
 | elasticsearch-analysis-naturalsort-1.2.1.0-plugin.zip   | 6cadc34119f4394fb3b706d18a17aaff17c2bb5f |
 
 ## Project docs
