@@ -7,7 +7,7 @@ This plugin allows the use of sort keys for natural sort order.
 
 | Elasticsearch version    | Plugin      | Release date |
 | ------------------------ | ----------- | -------------|
-| 2.1.1                    | 2.1.1.0     | Jan 11, 2015 |
+| 2.1.1                    | 2.1.1.0     | Jan 11, 2016 |
 | 1.7.0                    | 1.7.0.0     | Jul 27, 2015 |
 | 1.6.1                    | 1.6.1.0     | Jul 27, 2015 |
 | 1.4.0                    | 1.4.0.0     | Nov 13, 2014 |
