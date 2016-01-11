@@ -10,10 +10,17 @@
             <outputDirectory>/</outputDirectory>
             <useProjectArtifact>true</useProjectArtifact>
             <unpack>false</unpack>
-            <scope>compile</scope>
+            <scope>runtime</scope>
             <includes>
                 <include>org.xbib.elasticsearch.plugin</include>
             </includes>
         </dependencySet>
     </dependencySets>
+    <files>
+        <file>
+            <source>${basedir}/src/main/templates/plugin-descriptor.properties</source>
+            <outputDirectory>/</outputDirectory>
+            <filtered>true</filtered>
+        </file>
+    </files>
 </assembly>

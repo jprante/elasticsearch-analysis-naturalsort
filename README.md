@@ -7,6 +7,7 @@ This plugin allows the use of sort keys for natural sort order.
 
 | Elasticsearch version    | Plugin      | Release date |
 | ------------------------ | ----------- | -------------|
+| 2.1.1                    | 2.1.1.0     | Jan 11, 2015 |
 | 1.7.0                    | 1.7.0.0     | Jul 27, 2015 |
 | 1.6.1                    | 1.6.1.0     | Jul 27, 2015 |
 | 1.4.0                    | 1.4.0.0     | Nov 13, 2014 |
@@ -15,9 +16,15 @@ This plugin allows the use of sort keys for natural sort order.
 
 ## Installation
 
-```
-./bin/plugin -install analysis-naturalsort -url http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-naturalsort/1.7.0.0/elasticsearch-analysis-naturalsort-1.7.0.0-plugin.zip
-```
+### 2.x
+
+    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-naturalsort/2.1.1.0/elasticsearch-analysis-naturalsort-2.1.1.0-plugin.zip
+
+Do not forget to restart the node after installing.
+
+### 1.x
+
+    ./bin/plugin -install analysis-naturalsort -url http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-naturalsort/1.7.0.0/elasticsearch-analysis-naturalsort-1.7.0.0-plugin.zip
 
 Do not forget to restart the node after installing.
 
@@ -31,33 +38,44 @@ All feedback is welcome! If you find issues, please post them at [Github](https:
 
 # How to use
 
-Settings
+Define a field analyzer of `naturalsort`
 
-    index:
-      analysis:
-          analyzer:
-              naturalsort:
-                  tokenizer: keyword
-                  filter: naturalsort
+    PUT /test
 
-Mappings
-
+    POST /_test
     { 
-      "type1" : { 
-        "properties" : { 
-             "points" : { 
-                "type" : "string", 
-                "fields" : { 
-                    "sort" : { "type" : "string", "analyzer" : "naturalsort" } 
+        "type1" : { 
+            "properties" : { 
+                "points" : { 
+                    "type" : "string", 
+                    "fields" : { 
+                        "sort" : { "type" : "string", "analyzer" : "naturalsort" } 
+                    } 
                 } 
-             } 
-         } 
-      } 
+            } 
+        } 
     }
 
+Index some data
 
-Search
+    PUT /test/doc/1
+    {
+      "points" :  "Bob: 2 points"
+    }
 
+    PUT /test/doc/2
+    {
+      "points" : "Bob: 3 points"
+    }
+
+    PUT /test/doc/3
+    {
+      "points" : "Bob: 10 points"
+    }
+
+Search and sort
+
+    POST /test/_search
     {
        "fields" : "points",
        "query": {
@@ -69,7 +87,6 @@ Search
                 }
         }       
     }
-
 
 Response
 
