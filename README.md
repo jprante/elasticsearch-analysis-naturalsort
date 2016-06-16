@@ -5,20 +5,21 @@ This plugin allows the use of sort keys for natural sort order.
 
 ## Versions
 
-| Elasticsearch version    | Plugin      | Release date |
-| ------------------------ | ----------- | -------------|
-| 2.1.1                    | 2.1.1.0     | Jan 11, 2016 |
-| 1.7.0                    | 1.7.0.0     | Jul 27, 2015 |
-| 1.6.1                    | 1.6.1.0     | Jul 27, 2015 |
-| 1.4.0                    | 1.4.0.0     | Nov 13, 2014 |
-| 1.3.4                    | 1.3.4.0     | Jan 23, 2014 |
-| 1.2.1                    | 1.2.1.0     | Jun 30, 2014 |
+| Elasticsearch    | Naturalsort Plugin | Release date |
+| ---------------- | ------------------ | -------------|
+| 2.3.3            | 2.3.3.0            | Jun 16, 2016 |
+| 2.1.1            | 2.1.1.0            | Jan 11, 2016 |
+| 1.7.0            | 1.7.0.0            | Jul 27, 2015 |
+| 1.6.1            | 1.6.1.0            | Jul 27, 2015 |
+| 1.4.0            | 1.4.0.0            | Nov 13, 2014 |
+| 1.3.4            | 1.3.4.0            | Jan 23, 2014 |
+| 1.2.1            | 1.2.1.0            | Jun 30, 2014 |
 
 ## Installation
 
 ### 2.x
 
-    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-naturalsort/2.1.1.0/elasticsearch-analysis-naturalsort-2.1.1.0-plugin.zip
+    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-naturalsort/2.3.3..0/elasticsearch-analysis-naturalsort-2.3.3.0-plugin.zip
 
 Do not forget to restart the node after installing.
 

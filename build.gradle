@@ -1,20 +1,15 @@
 
-def xbibGroup = 'org.xbib.elasticsearch.plugin'
-def xbibVersion = '2.1.1.0'
-
-group = xbibGroup
-version = xbibVersion
-
-println "Current JVM: " + org.gradle.internal.jvm.Jvm.current()
+group = 'org.xbib.elasticsearch.plugin'
+version = '2.3.3.0'
 
 ext {
     pluginName = 'naturalsort'
-    pluginClassname = 'org.xbib.elasticsearch.plugin.naturalsort.NaturalSortAnalysisrPlugin'
+    pluginClassname = 'org.xbib.elasticsearch.plugin.naturalsort.NaturalSortAnalysisPlugin'
     pluginDescription = 'Natural sort plugin for Elasticsearch'
     versions = [
         'log4j': '2.5',
         'junit' : '4.12',
-        'elasticsearch' : '2.1.1'
+        'elasticsearch' : '2.3.3'
     ]
 }
 
@@ -42,7 +37,9 @@ sourceSets {
 }
 
 configurations {
-    providedCompile
+    wagon
+    integrationTestCompile.extendsFrom testCompile
+    integrationTestRuntime.extendsFrom testRuntime
     releaseJars {
         extendsFrom runtime
         exclude group: 'org.elasticsearch'
@@ -52,9 +49,6 @@ configurations {
         exclude group: 'commons-logging'
 
     }
-    wagon
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
 }
 
 dependencies {
@@ -62,13 +56,12 @@ dependencies {
     testCompile "junit:junit:${versions.junit}"
     testCompile "org.apache.logging.log4j:log4j-slf4j-impl:${versions.log4j}"
     testCompile "org.apache.logging.log4j:log4j-core:${versions.log4j}"
+    releaseJars "${project.group}:${project.name}:${project.version}"
     wagon 'org.apache.maven.wagon:wagon-ssh-external:2.10'
 }
 
-compileJava {
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
-}
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
 
 tasks.withType(JavaCompile) {
     options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
@@ -101,7 +94,6 @@ task makePluginDescriptor(type: Copy) {
 }
 
 task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
-    from files(libsDir)
     from configurations.releaseJars
     from 'build/tmp/plugin'
     classifier = 'plugin'
