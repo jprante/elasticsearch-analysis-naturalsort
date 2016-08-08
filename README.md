@@ -7,6 +7,7 @@ This plugin allows the use of sort keys for natural sort order.
 
 | Elasticsearch    | Naturalsort Plugin | Release date |
 | ---------------- | ------------------ | -------------|
+| 2.3.4            | 2.3.4.0            | Aug  8, 2016 |
 | 2.3.3            | 2.3.3.0            | Jun 16, 2016 |
 | 2.1.1            | 2.1.1.0            | Jan 11, 2016 |
 | 1.7.0            | 1.7.0.0            | Jul 27, 2015 |
@@ -19,7 +20,7 @@ This plugin allows the use of sort keys for natural sort order.
 
 ### 2.x
 
-    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-naturalsort/2.3.3..0/elasticsearch-analysis-naturalsort-2.3.3.0-plugin.zip
+    ./bin/plugin install http://xbib.org/repository/org/xbib/elasticsearch/plugin/elasticsearch-analysis-naturalsort/2.3.4.0/elasticsearch-analysis-naturalsort-2.3.4.0-plugin.zip
 
 Do not forget to restart the node after installing.
 

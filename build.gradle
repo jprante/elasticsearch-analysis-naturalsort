@@ -1,15 +1,15 @@
 
 group = 'org.xbib.elasticsearch.plugin'
-version = '2.3.3.0'
+version = '2.3.4.0'
 
 ext {
     pluginName = 'naturalsort'
     pluginClassname = 'org.xbib.elasticsearch.plugin.naturalsort.NaturalSortAnalysisPlugin'
     pluginDescription = 'Natural sort plugin for Elasticsearch'
     versions = [
-        'log4j': '2.5',
-        'junit' : '4.12',
-        'elasticsearch' : '2.3.3'
+            'elasticsearch' : '2.3.4',
+            'log4j': '2.5',
+            'junit' : '4.12'
     ]
 }
 
@@ -140,11 +140,9 @@ uploadArchives {
         if (project.hasProperty("xbibUsername")) {
             mavenDeployer {
                 configuration = configurations.wagon
-                repository(
-                        id: 'xbib.org',
-                        url: uri('scpexe://xbib.org/repository'),
-                        authentication: [userName: xbibUsername, privateKey: xbibPrivateKey]
-                )
+                repository(url: uri('scpexe://xbib.org/repository')) {
+                    authentication(userName: xbibUsername, privateKey: xbibPrivateKey)
+                }
                 pom.project {
                     inceptionYear '2012'
                     licenses {
