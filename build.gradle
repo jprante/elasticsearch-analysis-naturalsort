@@ -1,7 +1,4 @@
 
-group = 'org.xbib.elasticsearch.plugin'
-version = '2.3.4.0'
-
 ext {
     pluginName = 'naturalsort'
     pluginClassname = 'org.xbib.elasticsearch.plugin.naturalsort.NaturalSortAnalysisPlugin'
