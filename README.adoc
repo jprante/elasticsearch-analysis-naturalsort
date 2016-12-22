@@ -9,6 +9,10 @@ image:https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif[title="PayPa
 
 This plugin allows the use of sort keys for natural sort order.
 
+== Documentation
+
+https://jprante.github.io/elasticsearch-analysis-naturalsort/
+
 .Version compatibility
 |===
 |Plugin |Elasticsearch |Release date
@@ -52,14 +56,9 @@ Do not forget to restart the node after installing.
 
 Do not forget to restart the node after installing.
 
-== Documentation
-
-link:src/docs/asciidoc/index.adoc[Documentation]
-
 == Issues
 
 All feedback is welcome! If you find issues, please post them at https://github.com/jprante/elasticsearch-analysis-naturalsort/issues[Github]
-
 
 = License
 
