@@ -5,7 +5,11 @@ import org.apache.lucene.util.AttributeFactory;
 
 import java.text.Collator;
 
-public class NaturalSortKeyAttributeFactory extends AttributeFactory.StaticImplementationAttributeFactory<NaturalSortKeyAttributeImpl> {
+/**
+ *
+ */
+public class NaturalSortKeyAttributeFactory
+        extends AttributeFactory.StaticImplementationAttributeFactory<NaturalSortKeyAttributeImpl> {
 
     private final Collator collator;
 
@@ -27,5 +31,18 @@ public class NaturalSortKeyAttributeFactory extends AttributeFactory.StaticImple
     @Override
     protected NaturalSortKeyAttributeImpl createInstance() {
         return new NaturalSortKeyAttributeImpl(collator, digits, maxTokens);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        return object instanceof NaturalSortKeyAttributeFactory &&
+                collator.equals(((NaturalSortKeyAttributeFactory) object).collator) &&
+                Integer.compare(digits, ((NaturalSortKeyAttributeFactory) object).digits) == 0 &&
+                Integer.compare(maxTokens, ((NaturalSortKeyAttributeFactory) object).maxTokens) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return collator.hashCode() ^ Integer.hashCode(digits) ^ Integer.hashCode(maxTokens);
     }
 }

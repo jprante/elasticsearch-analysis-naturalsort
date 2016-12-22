@@ -1,67 +1,75 @@
 
+plugins {
+    id "org.sonarqube" version "2.2"
+    id "org.xbib.gradle.plugin.asciidoctor" version "1.5.4.1.0"
+}
+
+printf "Host: %s\nOS: %s %s %s\nJVM: %s %s %s %s\nGroovy: %s\nGradle: %s\n" +
+        "Build: group: ${project.group} name: ${project.name} version: ${project.version}\n",
+        InetAddress.getLocalHost(),
+        System.getProperty("os.name"),
+        System.getProperty("os.arch"),
+        System.getProperty("os.version"),
+        System.getProperty("java.version"),
+        System.getProperty("java.vm.version"),
+        System.getProperty("java.vm.vendor"),
+        System.getProperty("java.vm.name"),
+        GroovySystem.getVersion(),
+        gradle.gradleVersion
+
+
 ext {
     pluginName = 'naturalsort'
     pluginClassname = 'org.xbib.elasticsearch.plugin.naturalsort.NaturalSortAnalysisPlugin'
     pluginDescription = 'Natural sort plugin for Elasticsearch'
+    user = 'jprante'
+    name = 'elasticsearch-analysis-naturalsort'
+    scmUrl = 'https://github.com/' + user + '/' + name
+    scmConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
+    scmDeveloperConnection = 'scm:git:git://github.com/' + user + '/' + name + '.git'
     versions = [
-            'elasticsearch' : '2.3.4',
-            'log4j': '2.5',
-            'junit' : '4.12'
+            'elasticsearch' : '5.1.1',
+            'log4j': '2.7'
     ]
 }
 
 apply plugin: 'java'
 apply plugin: 'maven'
+apply plugin: 'signing'
+apply plugin: 'findbugs'
+apply plugin: 'pmd'
+apply plugin: 'checkstyle'
+apply plugin: 'jacoco'
+apply plugin: 'org.xbib.gradle.plugin.asciidoctor'
 
 repositories {
     mavenCentral()
-    mavenLocal()
-    jcenter()
-    maven {
-        url "http://xbib.org/repository"
-    }
-}
-
-sourceSets {
-    integrationTest {
-        java {
-            compileClasspath += main.output + test.output
-            runtimeClasspath += main.output + test.output
-            srcDir file('src/integration-test/java')
-        }
-        resources.srcDir file('src/integration-test/resources')
-    }
 }
 
 configurations {
     wagon
-    integrationTestCompile.extendsFrom testCompile
-    integrationTestRuntime.extendsFrom testRuntime
-    releaseJars {
+    distJars {
         extendsFrom runtime
         exclude group: 'org.elasticsearch'
         exclude group: 'com.fasterxml.jackson.core', module: 'jackson-core'
-        exclude group: 'org.slf4j'
         exclude group: 'log4j'
-        exclude group: 'commons-logging'
-
     }
 }
 
 dependencies {
     compile "org.elasticsearch:elasticsearch:${versions.elasticsearch}"
-    testCompile "junit:junit:${versions.junit}"
-    testCompile "org.apache.logging.log4j:log4j-slf4j-impl:${versions.log4j}"
+    testCompile "junit:junit:4.12"
     testCompile "org.apache.logging.log4j:log4j-core:${versions.log4j}"
-    releaseJars "${project.group}:${project.name}:${project.version}"
+    distJars "${project.group}:${project.name}:${project.version}"
     wagon 'org.apache.maven.wagon:wagon-ssh-external:2.10'
 }
 
-sourceCompatibility = 1.7
-targetCompatibility = 1.7
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
 
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 tasks.withType(JavaCompile) {
-    options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    options.compilerArgs << "-Xlint:all" << "-profile" << "compact2"
 }
 
 test {
@@ -91,66 +99,53 @@ task makePluginDescriptor(type: Copy) {
 }
 
 task buildPluginZip(type: Zip, dependsOn: [':jar', ':makePluginDescriptor']) {
-    from configurations.releaseJars
+    from configurations.distJars
     from 'build/tmp/plugin'
+    into 'elasticsearch'
     classifier = 'plugin'
 }
 
 task unpackPlugin(type: Copy, dependsOn: [':buildPluginZip']) {
     delete "plugins"
-    from configurations.releaseJars
+    from configurations.distJars
     from 'build/tmp/plugin'
     into 'plugins/helper'
 }
 
-task integrationTest(type: Test, dependsOn: ['unpackPlugin']) {
-    testClassesDir = sourceSets.integrationTest.output.classesDir
-    classpath = configurations.integrationTestCompile
-    classpath += fileTree("plugins/${pluginName}").include('*.jar')
-    classpath += sourceSets.integrationTest.output
-    // without this trick to remove identical jars from classpath, an Elasticsearch bug whines about a "jar hell"
-    classpath -= configurations.releaseJars
-    outputs.upToDateWhen { false }
-    systemProperty 'path.home', projectDir.absolutePath
-    testLogging.showStandardStreams = false
-}
-
-integrationTest.mustRunAfter test
-check.dependsOn integrationTest
-
 clean {
     delete "plugins"
+    delete "data"
+    delete "logs"
+}
+
+asciidoctor {
+    backends 'html5'
+    attributes toc: ''
+    outputDir = file('docs')
+}
+
+
+task javadocJar(type: Jar, dependsOn: classes) {
+    from javadoc
+    into 'build/tmp'
+    classifier 'javadoc'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
+    into 'build/tmp'
     classifier 'sources'
 }
 
 artifacts {
-    archives sourcesJar
-    archives buildPluginZip
+    archives javadocJar, sourcesJar, buildPluginZip
 }
 
-uploadArchives {
-    repositories {
-        if (project.hasProperty("xbibUsername")) {
-            mavenDeployer {
-                configuration = configurations.wagon
-                repository(url: uri('scpexe://xbib.org/repository')) {
-                    authentication(userName: xbibUsername, privateKey: xbibPrivateKey)
-                }
-                pom.project {
-                    inceptionYear '2012'
-                    licenses {
-                        license {
-                            name 'The Apache Software License, Version 2.0'
-                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                            distribution 'repo'
-                        }
-                    }
-                }
-            }
-        }
+if (project.hasProperty('signing.keyId')) {
+    signing {
+        sign configurations.archives
     }
 }
+
+apply from: 'gradle/publish.gradle'
+apply from: 'gradle/sonarqube.gradle'
