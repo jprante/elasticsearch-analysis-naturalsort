@@ -54,7 +54,7 @@ Do not forget to restart the node after installing.
 
 == Documentation
 
-link:blob/master/src/docs/asciidoc/index.adoc[Documentation]
+link:src/docs/asciidoc/index.adoc[Documentation]
 
 == Issues
 
