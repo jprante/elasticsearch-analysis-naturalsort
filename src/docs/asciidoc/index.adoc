@@ -8,36 +8,65 @@ Version 1.0
 :experimental:
 :description: Natural sort for Elasticsearch
 :keywords: Elasticsearch, Plugin, Natural sort
-
-The following text gives an introduction on how to use natural sort plugin
-after installed in Elasticsearch.
+:icons: font
 
 == Example for Elasticsearch 5.x
 
-This example is encode in `Sense` syntax.
+The following is an introduction on how to use natural sort plugin in Elasticsearch.
+
+Let's assume we have a list with mixed textual und numeric content, like Bob's points
+he received from three teachers, and we want to sort the statements with regard to the
+points.
+
+The teachers gave him these statements: "Bob: 2 points", "Bob: 3 points",
+"Bob: 10 points".
+
+Ordinary sort using the canonical string order would give us the list
+"Bob: 10 points", "Bob: 2 points", "Bob: 3 points". That is obviously not the
+order we want.
+
+Natural sort tokenizes the content, and reformats the numeric parts to a string
+with leading zeroes before sorting, so the result will be different:
+"Bob: 2 points", "Bob: 3 points", "Bob: 10 points".
+
+How does look like using Elasticsearch? The commands are encoded in `Sense` syntax.
 
 [source]
 ----
 
-PUT /_test
+PUT /test
 {
-  "mappings" : {
-    "type1" : {
-      "properties" : {
-        "points" : {
-          "type" : "text",
-          "store" : true,
-          "fields" : {
-            "sort" : {
-              "type" : "text",
-              "fielddata" : true,
-              "analyzer" : "naturalsort"
+   "settings": {
+      "index": {
+         "analysis": {
+            "analyzer": {
+               "natural": {
+                  "type": "naturalsort",
+                  "locale": "en",
+                  "digit": 5,
+                  "maxTokens": 5
+               }
             }
-          }
-        }
+         }
       }
-    }
-  }
+   },
+   "mappings": {
+      "doc": {
+         "properties": {
+            "points": {
+               "type": "text",
+               "store": true,
+               "fields": {
+                  "encoded": {
+                     "type": "text",
+                     "fielddata": true,
+                     "analyzer": "natural"
+                  }
+               }
+            }
+         }
+      }
+   }
 }
 
 PUT /test/doc/1
@@ -57,12 +86,12 @@ PUT /test/doc/3
 
 POST /test/_search
 {
-   "fields" : "points",
    "query": {
        "match_all" : {}
     },
+   "stored_fields" : "points",
     "sort" : {
-            "points.sort" : {
+            "points.encoded" : {
                  "order" : "asc"
             }
     }
@@ -74,44 +103,89 @@ Response
 [source]
 ----
 {
-  "took" : 54,
-  "timed_out" : false,
-  "_shards" : {
-    "total" : 2,
-    "successful" : 2,
-    "failed" : 0
-  },
-  "hits" : {
-    "total" : 3,
-    "max_score" : null,
-    "hits" : [ {
-      "_index" : "test",
-      "_type" : "type1",
-      "_id" : "Ono1C2F7SdWBPL6QRAGA6Q",
-      "_score" : null,
-      "fields" : {
-        "points" : "Bob: 2 points"
-      },
-      "sort" : [ "*\u0018䀊䀀。ᰁက挀㄀ᜀఠٰ̰\u0000\u0002\u0001\u0000䀀‎瀀ࠀЁ渀Ā@ \u0010\b\u0000\u0004\u0001\u0000䀀 ကࠀЀȀĀ@ \u0001" ]
-    }, {
-      "_index" : "test",
-      "_type" : "type1",
-      "_id" : "J5EornIuRKCy7_G084eyoQ",
-      "_score" : null,
-      "fields" : {
-        "points" : "Bob: 3 points"
-      },
-      "sort" : [ "*\u0018䀊䀀。ᰁሀ挀㄀ᜀఠٰ̰\u0000\u0002\u0001\u0000䀀‎瀀ࠀЁ渀Ā@ \u0010\b\u0000\u0004\u0001\u0000䀀 ကࠀЀȀĀ@ \u0001" ]
-    }, {
-      "_index" : "test",
-      "_type" : "type1",
-      "_id" : "yHWy94jPTHqULtgSZvvysw",
-      "_score" : null,
-      "fields" : {
-        "points" : "Bob: 10 points"
-      },
-      "sort" : [ "*\u0018䀊䀀。 ฀䘀ㆀᢀ஀̸ؐƘ\u0000\u0001\u0000䀀 ဇ㠀ЀȀĀ㮀@ \u0010\b\u0004\u0002\u0000\u0001\u0000 ကࠀЀȀĀ@ \u0010\b\u0004\u0001" ]
-    } ]
-  }
+   "took": 15,
+   "timed_out": false,
+   "_shards": {
+      "total": 5,
+      "successful": 5,
+      "failed": 0
+   },
+   "hits": {
+      "total": 3,
+      "max_score": null,
+      "hits": [
+         {
+            "_index": "test",
+            "_type": "doc",
+            "_id": "1",
+            "_score": null,
+            "fields": {
+               "points": [
+                  "Bob: 2 points"
+               ]
+            },
+            "sort": [
+               "\u0000T\u0000b\u0000T\u0000\u0006\u0000G\u0000H\u0000c\u0000b\u0000\\\u0000a\u0000g\u0000f\u0000\u0000\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000w\u0000\u0001\u0000\u0001\u0000w\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"
+            ]
+         },
+         {
+            "_index": "test",
+            "_type": "doc",
+            "_id": "2",
+            "_score": null,
+            "fields": {
+               "points": [
+                  "Bob: 3 points"
+               ]
+            },
+            "sort": [
+               "\u0000T\u0000b\u0000T\u0000\u0006\u0000G\u0000I\u0000c\u0000b\u0000\\\u0000a\u0000g\u0000f\u0000\u0000\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000w\u0000\u0001\u0000\u0001\u0000w\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"
+            ]
+         },
+         {
+            "_index": "test",
+            "_type": "doc",
+            "_id": "3",
+            "_score": null,
+            "fields": {
+               "points": [
+                  "Bob: 10 points"
+               ]
+            },
+            "sort": [
+               "\u0000T\u0000b\u0000T\u0000\u0006\u0000H\u0000G\u0000F\u0000c\u0000b\u0000\\\u0000a\u0000g\u0000f\u0000\u0000\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000w\u0000\u0001\u0000\u0001\u0000\u0001\u0000w\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0000\u0000\u0002\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001\u0000\u0001"
+            ]
+         }
+      ]
+   }
 }
 ----
+
+== Collation keys
+
+Internally, the natural sort plugin uses a collation
+key, the same as returned from `java.text.Collator#getCollationKey(String)`,
+for defining the sorting order.
+The collation keys are encoded in binary form, can be compared bitwise and
+work with Elasticsearch `sort` operation. They look a bit weird in the
+returned result, but that can be ignored.
+
+IMPORTANT: Do not upgrade the Java VM or change the collation key
+implementation during the lifetime of the index. The comparison algorithm
+of `java.text.Collator` is not portable and is only guaranteed to work
+on the same version of the Java VM.
+
+== Options
+
+The natural sort plugin offers the following options which can be passed to the analyzer definition in the mapping:
+
+[horizontal]
+locale:: the locale for the collator
+digits:: the number of digits used for numeric parts in the field. Can be in the range from `1` to `9`. Default is `1`
+maxTokens:: the number of tokens which are used while text/numeric tokenization of the field.
+If there are more tokens, they will be ignored for the sort key. Default is `1`.
+bufferSize:: internal buffer size for the underlying `KeywordTokenizer`. Default is 256 or `KeywordTokenizer.DEFAULT_BUFFER_SIZE`
+
+== Gradle test report
+
+The current test report is link:test[here]
